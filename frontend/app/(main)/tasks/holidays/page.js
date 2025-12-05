@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import DefaultLayout from '@/app/components/layout/DefaultLayout'
-import ViewTable from '@/app/components/policy/holiday/ViewTable';
+import ViewTable from '@/app/components/tasks/holiday/ViewTable';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 async function fetchHolidays(token) {

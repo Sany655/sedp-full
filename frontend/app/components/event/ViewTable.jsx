@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import useConfirmDelete from "@/app/hooks/useConfirmDelete";
 import EventAddModal from "./EventAddModal";
 import EventEditModal from "./EventEditModal";
+import EventDetailsModal from "./EventDetailsModal";
 
 const ViewTable = ({ data, title }) => {
   const router = useRouter();
@@ -90,6 +91,43 @@ const ViewTable = ({ data, title }) => {
     setIsLoading(true);
     try {
       const res = await fetch(`/api/event?id=${eventId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        toast.dismiss();
+        toast.success(data.msg || "Event updated successfully");
+        router.refresh();
+      } else {
+        toast.dismiss();
+        toast.error(data.msg || "Failed to update event");
+      }
+    } catch (err) {
+      console.error("Edit error:", err);
+      toast.dismiss();
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+      handleModal(null);
+    }
+  };
+
+   const handleView = async (formData) => {
+    const eventId = formData.id;
+
+    if (!eventId) {
+      toast.error("Event ID is required");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/event/${eventId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -396,9 +434,10 @@ const ViewTable = ({ data, title }) => {
                   <td className="p-4">
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() =>
-                          router.push(`/event/view/${event.id}`)
-                        }
+                        // onClick={() =>
+                        //   router.push(`/event/view/${event.id}`)
+                        // }
+                        onClick={() => handleModal("view", event)}
                         className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                         title="View Details"
                       >
@@ -443,6 +482,15 @@ const ViewTable = ({ data, title }) => {
           isOpen
           event={modal.event}
           onSubmit={handleEdit}
+          onClose={() => handleModal(null)}
+          title={title}
+        />
+      )}
+      {modal.type === "view" && modal.event && (
+        <EventDetailsModal
+          isOpen
+          event={modal.event}
+          onSubmit={handleView}
           onClose={() => handleModal(null)}
           title={title}
         />

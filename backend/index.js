@@ -21,6 +21,7 @@ const eventRoutes = require('./routes/event/eventRoutes');
 const eventTypeRoutes = require('./routes/event/eventTypeRoutes');
 const eventTargetGroupRoutes = require('./routes/event/eventTargetGroupRoutes');
 const campaignMilestoneRoutes = require('./routes/campaignMilestoneRoutes');
+const voterRoutes = require('./routes/voterRoutes');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { getAppMetadata } = require('./controllers/metadataController');
@@ -75,11 +76,13 @@ app.use('/api/devices', attendanceDeviceRoutes);
 app.use('/api/volunteer-teams', volunteerTeamRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/api/events/types', eventTypeRoutes);
+app.use('/api/event-types', eventTypeRoutes);
 app.use('/api/events/target-groups', eventTargetGroupRoutes);
 
 app.use('/api/campaign-milestones', campaignMilestoneRoutes);
 app.use('/api/campaign-types', require('./routes/campaignTypeRoutes'));
+app.use('/api/voters', voterRoutes);
+
 
 //use for integrated application
 // if (process.env.NODE_ENV === 'prod') {

@@ -131,7 +131,7 @@ const ViewTable = ({ data, users, title }) => {
   const deleteUser = async (id) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy?id=${id}`, {
+      const res = await fetch(`/api/user?id=${id}`, {
         method: "DELETE",
       });
 

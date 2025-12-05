@@ -34,7 +34,8 @@ const createEventType = asyncHandler(async (req, res, next) => {
 ------------------------------------------------------*/
 const getEventTypes = asyncHandler(async (req, res, next) => {
     const items = await EventType.findAll({});
-
+    console.log("items: ", items);
+    
     return res.status(200).json({
         success: true,
         msg: `${title}s fetched successfully!`,

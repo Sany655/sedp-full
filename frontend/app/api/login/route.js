@@ -12,7 +12,8 @@ export async function POST(req) {
             headers: { 'Content-Type': 'application/json' },
         });
 
-
+        console.log(res);
+        
         if (!res.ok) {
             const error = await res.json();
             return NextResponse.json({ message: error.message || 'Invalid credentials' }, { status: 401 });

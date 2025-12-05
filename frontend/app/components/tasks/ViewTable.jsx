@@ -37,7 +37,7 @@ const ViewTable = ({ data, users, title }) => {
   const handleAssignTask = async (formData) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy/set`, {
+      const res = await fetch(`/api/task/set`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const ViewTable = ({ data, users, title }) => {
   const handleAddTask = async (formData) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy`, {
+      const res = await fetch(`/api/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ const ViewTable = ({ data, users, title }) => {
   const deleteTask = async (id) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy?id=${id}`, {
+      const res = await fetch(`/api/task?id=${id}`, {
         method: "DELETE",
       });
 

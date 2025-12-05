@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import DefaultLayout from '@/app/components/layout/DefaultLayout'
-import ViewTable from '@/app/components/policy/ViewTable';
+import ViewTable from '@/app/components/tasks/ViewTable';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 
 async function fetchUsers(token) {

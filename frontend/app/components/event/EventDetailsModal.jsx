@@ -1,9 +1,10 @@
 "use client";
 "use client";
-import React, { useState,useEffect } from "react";
+import { BASE_URL_FOR_CLIENT } from "@/app/utils/constants";
+import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
-const EventAddModal = ({ isOpen, onClose, onSubmit, title }) => {
+const EventDetailsModal = ({ isOpen, onClose, onSubmit, event, title }) => {
   const [formData, setFormData] = useState({
     name: "",
     objective: "",
@@ -29,37 +30,23 @@ const EventAddModal = ({ isOpen, onClose, onSubmit, title }) => {
     actual_end_datetime: "",
   });
 
-  const [eventTypes, setEventTypes] = useState([]);
-  const [targetGroups, setTargetGroups] = useState([]);
-  const [loadingDropdowns, setLoadingDropdowns] = useState(true);
-
   // Dummy data for dropdowns
-  // const eventTypes = [
-  //   { id: 1, name: "Conference" },
-  //   { id: 2, name: "Community Service" },
-  //   { id: 3, name: "Workshop" },
-  //   { id: 4, name: "Fundraiser" },
-  //   { id: 5, name: "Social Gathering" },
-  // ];
-
-  // const targetGroups = [
-  //   { id: 1, name: "General Public" },
-  //   { id: 2, name: "Students" },
-  //   { id: 3, name: "Professionals" },
-  //   { id: 4, name: "Seniors" },
-  //   { id: 5, name: "Youth" },
-  // ];
-const FALLBACK_EVENT_TYPES = [
+  const eventTypes = [
     { id: 1, name: "Conference" },
     { id: 2, name: "Community Service" },
     { id: 3, name: "Workshop" },
+    { id: 4, name: "Fundraiser" },
+    { id: 5, name: "Social Gathering" },
   ];
-  const FALLBACK_TARGET_GROUPS = [
+
+  const targetGroups = [
     { id: 1, name: "General Public" },
     { id: 2, name: "Students" },
     { id: 3, name: "Professionals" },
+    { id: 4, name: "Seniors" },
+    { id: 5, name: "Youth" },
   ];
-  
+
   const organizers = [
     { id: 1, name: "Main Office" },
     { id: 2, name: "Community Branch" },
@@ -102,47 +89,48 @@ const FALLBACK_EVENT_TYPES = [
     { id: 4, name: "Union 4", ward_id: 7 },
   ];
 
-  
+  // Helper function to format datetime for input
+  const formatDateTimeForInput = (datetime) => {
+    if (!datetime) return "";
+    // Convert "2025-12-15T09:00:00" or ISO format to "YYYY-MM-DDTHH:mm"
+    return datetime.slice(0, 16);
+  };
 
+  // Populate form data when editing an existing event
   useEffect(() => {
-    let mounted = true;
-
-    async function loadLookups() {
-      setLoadingDropdowns(true);
-      try {
-        // call your frontend API routes which should proxy to the backend
-        // ensure these endpoints support GET (see previous steps)
-        const [etRes, tgRes] = await Promise.all([
-          fetch("/api/event-types"),
-          fetch("/api/event-target-groups"),
-        ]);
-
-        console.log('etRes: ', etRes);
-
-        const etJson = etRes.ok ? await etRes.json().catch(() => null) : null;
-        const tgJson = tgRes.ok ? await tgRes.json().catch(() => null) : null;
-
-        // support both { data: [...] } and plain array
-        const etList = etJson?.data ?? etJson ?? null;
-        const tgList = tgJson?.data ?? tgJson ?? null;
-
-        if (!mounted) return;
-
-        setEventTypes(Array.isArray(etList) && etList.length ? etList : FALLBACK_EVENT_TYPES);
-        setTargetGroups(Array.isArray(tgList) && tgList.length ? tgList : FALLBACK_TARGET_GROUPS);
-      } catch (err) {
-        console.error("Failed to load eventTypes/targetGroups:", err);
-        if (!mounted) return;
-        setEventTypes(FALLBACK_EVENT_TYPES);
-        setTargetGroups(FALLBACK_TARGET_GROUPS);
-      } finally {
-        if (mounted) setLoadingDropdowns(false);
-      }
+    if (event) {
+      setFormData({
+        name: event.name || "",
+        objective: event.objective || "",
+        type_id: event.type_id?.toString() || "",
+        status: event.status?.toString() || "0",
+        visibility: event.visibility?.toString() || "0",
+        target_group_id: event.target_group_id?.toString() || "",
+        created_by: event.created_by?.toString() || "",
+        organized_by: event.organized_by?.toString() || "",
+        capacity: event.capacity?.toString() || "",
+        est_budget: event.est_budget?.toString() || "",
+        est_spending: event.est_spending?.toString() || "",
+        volunteer_team_id: event.volunteer_team_id?.toString() || "",
+        location: event.location || "",
+        division_id: event.division_id?.toString() || "",
+        district_id: event.district_id?.toString() || "",
+        thana_id: event.thana_id?.toString() || "",
+        ward_id: event.ward_id?.toString() || "",
+        union_id: event.union_id?.toString() || "",
+        expected_start_datetime: formatDateTimeForInput(
+          event.expected_start_datetime
+        ),
+        expected_end_datetime: formatDateTimeForInput(
+          event.expected_end_datetime
+        ),
+        actual_start_datetime: formatDateTimeForInput(
+          event.actual_start_datetime
+        ),
+        actual_end_datetime: formatDateTimeForInput(event.actual_end_datetime),
+      });
     }
-
-    loadLookups();
-    return () => { mounted = false; };
-  }, []);
+  }, [event]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -151,36 +139,12 @@ const FALLBACK_EVENT_TYPES = [
     }));
   };
 
-  const resetForm = () =>
-    setFormData({
-      name: "",
-      objective: "",
-      type_id: "",
-      status: "0",
-      visibility: "0",
-      target_group_id: "",
-      created_by: "",
-      organized_by: "",
-      capacity: "",
-      est_budget: "",
-      est_spending: "",
-      volunteer_team_id: "",
-      location: "",
-      division_id: "",
-      district_id: "",
-      thana_id: "",
-      ward_id: "",
-      union_id: "",
-      expected_start_datetime: "",
-      expected_end_datetime: "",
-      actual_start_datetime: "",
-      actual_end_datetime: "",
-    });
-
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (formData.name.trim()) {
       const jsonData = {
+        id: event.id, // Include event ID for update
         name: formData.name.trim(),
         objective: formData.objective.trim(),
         type_id: parseInt(formData.type_id),
@@ -189,24 +153,28 @@ const FALLBACK_EVENT_TYPES = [
         target_group_id: parseInt(formData.target_group_id),
         created_by: parseInt(formData.created_by),
         organized_by: parseInt(formData.organized_by),
-        capacity: parseInt(formData.capacity),
-        est_budget: parseFloat(formData.est_budget),
-        est_spending: parseFloat(formData.est_spending),
-        volunteer_team_id: parseInt(formData.volunteer_team_id),
+        capacity: formData.capacity ? parseInt(formData.capacity) : null,
+        est_budget: formData.est_budget ? parseFloat(formData.est_budget) : null,
+        est_spending: formData.est_spending
+          ? parseFloat(formData.est_spending)
+          : null,
+        volunteer_team_id: formData.volunteer_team_id
+          ? parseInt(formData.volunteer_team_id)
+          : null,
         location: formData.location.trim(),
         division_id: parseInt(formData.division_id),
         district_id: parseInt(formData.district_id),
         thana_id: parseInt(formData.thana_id),
-        ward_id: parseInt(formData.ward_id),
-        union_id: parseInt(formData.union_id),
+        ward_id: formData.ward_id ? parseInt(formData.ward_id) : null,
+        union_id: formData.union_id ? parseInt(formData.union_id) : null,
         expected_start_datetime: formData.expected_start_datetime,
         expected_end_datetime: formData.expected_end_datetime,
         actual_start_datetime: formData.actual_start_datetime || null,
         actual_end_datetime: formData.actual_end_datetime || null,
       };
 
+      console.log("Event Update Data:", jsonData);
       onSubmit(jsonData);
-      resetForm();
       onClose();
     }
   };
@@ -218,7 +186,7 @@ const FALLBACK_EVENT_TYPES = [
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            Add New {title}
+            {title} Details
           </h2>
           <button
             onClick={onClose}
@@ -228,7 +196,7 @@ const FALLBACK_EVENT_TYPES = [
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form className="p-6 space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
@@ -247,7 +215,7 @@ const FALLBACK_EVENT_TYPES = [
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter event name"
-                  required
+                  disabled
                 />
               </div>
 
@@ -264,7 +232,7 @@ const FALLBACK_EVENT_TYPES = [
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter event objective"
                   rows={3}
-                  required
+                  disabled
                 />
               </div>
 
@@ -692,12 +660,7 @@ const FALLBACK_EVENT_TYPES = [
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Save Event
-            </button>
+            
           </div>
         </form>
       </div>
@@ -705,4 +668,4 @@ const FALLBACK_EVENT_TYPES = [
   );
 };
 
-export default EventAddModal;
+export default EventDetailsModal;

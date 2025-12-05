@@ -33,7 +33,7 @@ const ViewTable = ({token, set_policies, policies, users }) => {
   const handleAddUser = async (formData) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy`, {
+      const res = await fetch(`/api/task`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const ViewTable = ({token, set_policies, policies, users }) => {
   const deleteUser = async (id) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/policy?id=${id}`, {
+      const res = await fetch(`/api/task?id=${id}`, {
         method: "DELETE",
       });
 

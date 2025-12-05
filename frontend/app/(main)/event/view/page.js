@@ -38,8 +38,13 @@ async function fetchUsers(token) {
     return res.json();
 }
 const page = async ({ searchParams }) => {
-    const page = parseInt(searchParams?.page || '1');
     const token = cookies().get('auth_token')?.value;
+      if (!token) {
+        redirect('/auth/login');
+      }
+    
+
+    const page = parseInt(searchParams?.page || '1');
     const policy = await fetchPolicies(token);
     const users = await fetchUsers(token);
 

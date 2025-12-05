@@ -10,6 +10,9 @@ import {
   FaGlobe,
   FaAllergies,
   FaMaxcdn,
+  FaVoteYea,
+  FaUserCheck,
+  FaChartPie,
 } from "react-icons/fa";
 import { FaLandMineOn } from "react-icons/fa6";
 import {
@@ -18,10 +21,12 @@ import {
   MdOutlineAddModerator,
   MdLocationCity,
   MdPlace,
+  MdHowToVote,
 } from "react-icons/md";
 import { AiOutlineAntDesign } from "react-icons/ai";
 import { TbDeviceAirtag } from "react-icons/tb";
 import { RiRoadMapLine } from "react-icons/ri";
+import { HiOfficeBuilding } from "react-icons/hi";
 
 
 const menu = [
@@ -78,13 +83,34 @@ const menu = [
     childrens: [
       {
         title: "Tasks",
-        path: "/policy/view",
+        path: "/tasks/view",
         icon: <MdOutlineAlignHorizontalLeft />,
       },
       {
         title: "Reports",
         path: "/policy/reports",
         icon: <MdOutlineAddModerator />,
+      },
+    ],
+  },
+  {
+    title: "Voter Management",
+    icon: <MdHowToVote />,
+    childrens: [
+      {
+        title: "Overview",
+        path: "",
+        icon: <FaChartPie />,
+      },
+      {
+        title: "Voters",
+        path: "/voter-management/voters",
+        icon: <FaUserCheck />,
+      },
+      {
+        title: "Voter Centers",
+        path: "",
+        icon: <HiOfficeBuilding />,
       },
     ],
   },
@@ -118,27 +144,27 @@ const menu = [
         childrens: [
           {
             title: "Division",
-            icon: <FaUsers />, // Changed from FaMapMarkerAlt to FaUsers (represents groups/teams)
+            icon: <FaUsers />,
             path: "/location/division/view",
           },
           {
             title: "District",
-            icon: <FaGlobe />, // Changed to FaGlobe (represents large geographical areas)
+            icon: <FaGlobe />,
             path: "/location/district/view",
           },
           {
             title: "Thana",
-            icon: <MdLocationCity />, // Changed to MdLocationCity (represents city/area level)
+            icon: <MdLocationCity />,
             path: "/location/thana/view",
           },
           {
             title: "Ward",
-            icon: <FaMapMarkerAlt />, // Kept FaMapMarkerAlt (represents specific locations/territories)
+            icon: <FaMapMarkerAlt />,
             path: "/location/ward/view",
           },
           {
             title: "Union",
-            icon: <MdPlace />, // Changed to MdPlace (represents specific points/locations)
+            icon: <MdPlace />,
             path: "/location/union/view",
           },
         ]
@@ -160,13 +186,13 @@ const menu = [
         icon: <MdOutlineAlignHorizontalLeft />,
       },
       {
-        title: "Event Type",
-        path: "/event/types",
+        title: "Event Types",
+        path: "/event-types/view",
         icon: <MdOutlineAddModerator />,
       },
       {
-        title: "Target Group",
-        path: "/event/target-groups",
+        title: "Event Target Group",
+        path: "/event-target-groups/view",
         icon: <MdOutlineAddModerator />,
       },
       {
@@ -184,11 +210,7 @@ const menu = [
         path: "/event/resources",
         icon: <MdOutlineAddModerator />,
       },
-      {
-        title: "Reports",
-        path: "/event/reports",
-        icon: <MdOutlineAddModerator />,
-      },
+      
     ],
   },
   {

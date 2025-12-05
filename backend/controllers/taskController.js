@@ -9,22 +9,49 @@ const { Task } = db;
 //@access   protected by admin
 const createTask = asyncHandler(async (req, res, next) => {
     const { title, description, priority, duetime,type, status } = req.body;
+    // defensive logging (one-liners)
+  console.log({ title, description, priority, duetime, type, status });
 
-    const task = new Task({
-        title,
-        description,
-        priority,
-        duetime,
-        type,
-        status
-    });
-    const newTask = await task.save();
+  // Basic validation
+  if (!title || !title.toString().trim()) {
+    return next(new ErrorResponse('title is required', 400));
+  }
+  let priorityto = 0;
 
-    return res.status(200).json({
+  if(priority=='High')
+    priorityto = 3;
+  else if(priority == "Medium"){
+    priorityto = 2;
+  }
+  else{
+    priorityto = 1;
+  }
+  // Normalize/convert values
+  const payload = {
+    title: title.toString().trim(),
+    description: description ? description.toString() : null,
+    priority: priorityto ? priorityto : 1,
+    // try to parse duetime. If invalid, keep null to avoid Sequelize errors
+    duetime: duetime ? new Date(duetime) : null,
+    type: type ? type.toString() : null,
+    status: status ? status.toString() : null
+  };
+
+   // create
+  try{
+    const task = await Task.create(payload);
+  console.log('whats the issue', task);
+
+    return res.status(201).json({
         success: true,
         msg: "Task created successfully!",
-        data: newTask
+        data: task
     });
+  }
+  catch(ex){
+    console.log('exception issue: ', ex);
+
+  }
 })
 
 
@@ -34,7 +61,8 @@ const createTask = asyncHandler(async (req, res, next) => {
 const getAllTasks = asyncHandler(async (req, res, next) => {
 
   const tasks = await Task.findAll();
-
+  console.log('all tasks: ', tasks);
+  
   res.status(200).json({
     success: true,
     message: 'Tasks fetched successfully!',
