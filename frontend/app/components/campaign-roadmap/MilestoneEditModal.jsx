@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaTimes, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -51,6 +51,14 @@ const MilestoneEditModal = ({ isOpen, onClose, onSubmit, milestone }) => {
             });
         }
     }, [milestone]);
+
+    const customTypeInputRef = useRef(null);
+
+    useEffect(() => {
+        if (typeList.type === "other" && customTypeInputRef.current) {
+            customTypeInputRef.current.focus();
+        }
+    }, [typeList.type]);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({
@@ -172,6 +180,7 @@ const MilestoneEditModal = ({ isOpen, onClose, onSubmit, milestone }) => {
                             {typeList.type === "other" && (
                                 <div className="flex-1 min-w-[150px]">
                                     <input
+                                        ref={customTypeInputRef}
                                         type="text"
                                         value={typeList.customType}
                                         onChange={(e) => setTypeList({ ...typeList, customType: e.target.value })}
