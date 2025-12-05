@@ -46,7 +46,7 @@ const page = async ({ searchParams }) => {
 
     return (
         <DefaultLayout title='All Roles'>
-            <ProtectedRoute permissions={['view-roles']}>
+            <ProtectedRoute permissions={['view-policies']}>
                 <ViewTable data={roles.data} permissions={permissions.data} />
             </ProtectedRoute>
         </DefaultLayout>
